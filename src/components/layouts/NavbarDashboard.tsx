@@ -1,7 +1,7 @@
 import profile from "../../assets/svg/account-circle.svg";
 import * as Icon from "react-icons/fa";
 import BreadCrumbs from "../Breadcrumbs";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const NavbarDashboard = () => {
   const location = useLocation();
@@ -32,7 +32,9 @@ const NavbarDashboard = () => {
       </div>
       <div className="justify-self-end flex items-center gap-4">
         <Icon.FaBell className="text-2xl text-white" />
-        <Icon.FaCog className="text-2xl text-white" />
+        <Link to={"/dashboard/settings"}>
+          <Icon.FaCog className="text-2xl text-white" />
+        </Link>
         <img src={profile} alt="profile" className="w-10" />
       </div>
     </div>

@@ -1,14 +1,51 @@
 import { Avatar, Chip } from "@material-tailwind/react";
 import { BsThreeDots } from "react-icons/bs";
+import clsx from "clsx";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
-const TodoItemCard = () => {
+type TodoItemCardProps = {
+  data?: {
+    id: number;
+    title: string;
+    description: string;
+  };
+  id: number | UniqueIdentifier;
+};
+
+const TodoItemCard = (props: TodoItemCardProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: props.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
-    <div className="bg-primary rounded-md p-2">
+    <div
+      style={style}
+      className={clsx(
+        "bg-primary rounded-md p-2 cursor-grab",
+        isDragging && "opacity-50"
+      )}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      onClick={() => console.log("clicked")}
+    >
       <div className="grid">
         <BsThreeDots className="text-white text-xl justify-self-end" />
       </div>
-      <h1 className="text-white text-lg font-semibold">Title task</h1>
-      <p className="text-white text-sm">Description task</p>
+      <h1 className="text-white text-lg font-semibold">{props.data?.title}</h1>
+      <p className="text-white text-sm">{props.data?.title}</p>
       <div className="mt-4 flex justify-between items-center">
         <div className="flex items-center -space-x-4">
           <Avatar

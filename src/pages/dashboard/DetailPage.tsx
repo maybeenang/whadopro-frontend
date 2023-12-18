@@ -1,7 +1,44 @@
 import * as Icon from "react-icons/fa";
 import BodyBoardCard from "../../components/cards/BodyBoardCard";
+import DrawerDetail from "../../components/layouts/DrawerDetail";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  KeyboardSensor,
+  PointerSensor,
+  UniqueIdentifier,
+  closestCorners,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { data } from "../../utils/data";
+import { useState } from "react";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import TodoItemCard from "../../components/cards/TodoItemCard";
 
 const DetailPage = () => {
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const [items, setItems] = useState({
+    todo: data[0].items,
+    doing: data[1].items,
+    review: data[2].items,
+    done: data[3].items,
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   return (
     <>
       <div className="text-white pt-4 flex border-b-2 pb-8">
@@ -42,13 +79,151 @@ const DetailPage = () => {
         </div>
       </div>
       <div className="flex gap-4 py-4 flex-wrap">
-        <BodyBoardCard />
-        <BodyBoardCard />
-        <BodyBoardCard />
-        <BodyBoardCard />
+        <DndContext
+          collisionDetection={closestCorners}
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+        >
+          <BodyBoardCard items={items.todo} id={"todo"} />
+          <BodyBoardCard items={items.doing} id={"doing"} />
+          <BodyBoardCard items={items.review} id={"review"} />
+          <BodyBoardCard items={items.done} id={"done"} />
+          <DragOverlay>
+            {activeId ? (
+              <div className="border-2 rounded-md">
+                <TodoItemCard
+                  id={activeId}
+                  data={
+                    items.todo.find((item) => item.id === activeId) ||
+                    items.doing.find((item) => item.id === activeId) ||
+                    items.review.find((item) => item.id === activeId) ||
+                    items.done.find((item) => item.id === activeId)
+                  }
+                />
+              </div>
+            ) : null}
+          </DragOverlay>
+        </DndContext>
       </div>
+      <DrawerDetail />
     </>
   );
+
+  function findContainer(id: number | UniqueIdentifier) {
+    // check is id number or not
+    if (typeof id === "number") {
+      return Object.keys(items).find((key) =>
+        items[key as keyof typeof items]
+          .map((item) => item.id)
+          .includes(id as number)
+      );
+    }
+
+    return Object.keys(items).find((key) => key.includes(id as string));
+  }
+
+  function handleDragStart(event: DragStartEvent) {
+    const { active } = event;
+    const { id } = active;
+
+    setActiveId(id);
+  }
+
+  function handleDragOver(event: DragOverEvent) {
+    const { active, over } = event;
+    const { id } = active;
+    const { id: overId } = over as { id: number };
+
+    // Find the containers
+    const activeContainer = findContainer(id);
+    const overContainer = findContainer(overId);
+
+    if (
+      !activeContainer ||
+      !overContainer ||
+      activeContainer === overContainer
+    ) {
+      return;
+    }
+
+    setItems((prev) => {
+      const activeItems = prev[activeContainer as keyof typeof prev];
+      const overItems = prev[overContainer as keyof typeof prev];
+
+      // Find the indexes for the items
+      const activeIndex = activeItems.indexOf(
+        activeItems.find((item) => item.id === id)!
+      );
+      const overIndex = overItems.indexOf(
+        overItems.find((item) => item.id === overId)!
+      );
+
+      let newIndex;
+
+      if (activeIndex < overIndex) {
+        newIndex = overIndex + 1;
+      } else {
+        newIndex = overIndex;
+      }
+
+      return {
+        ...prev,
+        [activeContainer]: [
+          ...prev[activeContainer as keyof typeof prev].filter(
+            (item) => item.id !== active.id
+          ),
+        ],
+        [overContainer]: [
+          ...prev[overContainer as keyof typeof prev].slice(0, newIndex),
+          items[activeContainer as keyof typeof items][activeIndex],
+          ...prev[overContainer as keyof typeof prev].slice(
+            newIndex,
+            prev[overContainer as keyof typeof prev].length
+          ),
+        ],
+      };
+    });
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    const { id } = active as { id: number };
+    const { id: overId } = over as { id: number };
+
+    const activeContainer = findContainer(id);
+    const overContainer = findContainer(overId);
+
+    if (
+      !activeContainer ||
+      !overContainer ||
+      activeContainer !== overContainer
+    ) {
+      return;
+    }
+
+    const activeIndex = items[activeContainer as keyof typeof items]
+      .map((item) => item.id)
+      .indexOf(id);
+
+    const overIndex = items[overContainer as keyof typeof items]
+      .map((item) => item.id)
+      .indexOf(overId);
+
+    if (activeIndex !== overIndex) {
+      setItems((items) => ({
+        ...items,
+        [overContainer]: arrayMove(
+          items[overContainer as keyof typeof items],
+          activeIndex,
+          overIndex
+        ),
+      }));
+    }
+
+    setActiveId(null);
+  }
 };
 
 export default DetailPage;
