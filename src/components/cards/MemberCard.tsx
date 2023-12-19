@@ -13,7 +13,7 @@ const MemberCard = () => {
       <Card className="w-56">
         <CardHeader floated={false} className="h-40">
           <img
-            src="https://docs.material-tailwind.com/img/team-3.jpg"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYrfjYJFJRvDgFJRhPVnuDnENlnjGZs1bWqw&usqp=CAU"
             alt="profile-picture"
           />
         </CardHeader>

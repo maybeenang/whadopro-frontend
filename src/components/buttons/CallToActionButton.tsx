@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
 
 type CallToActionButtonProps = {
   text?: string;
@@ -7,6 +8,7 @@ type CallToActionButtonProps = {
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const CallToActionButton = (props: CallToActionButtonProps) => {
+  const navigate = useNavigate();
   return (
     <>
       <button
@@ -15,6 +17,7 @@ const CallToActionButton = (props: CallToActionButtonProps) => {
           "px-6 py-2 font-semibold rounded-full text-sm text-white",
           props.classnames
         )}
+        onClick={() => navigate("/dashboard")}
         {...props}
       >
         {props.text}

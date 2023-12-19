@@ -14,20 +14,27 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 import DetailPage from "./pages/dashboard/DetailPage";
 import MemberPage from "./pages/dashboard/MemberPage";
 import SettingsPage from "./pages/dashboard/SettingsPage";
+import { AuthProvider, RequireAuth } from "react-auth-kit";
 
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
         <Route path="/" element={<LandingPage />} />
+        <Route
+          element={
+            <RequireAuth loginPath="/login">
+              <DashboardLayout />
+            </RequireAuth>
+          }
+        >
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard/detail/:id" element={<DetailPage />} />
+          <Route path="/dashboard/members" element={<MemberPage />} />
+          <Route path="/dashboard/settings" element={<SettingsPage />} />
+        </Route>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route path="" element={<DashboardPage />} />
-          <Route path="detail/:id" element={<DetailPage />} />
-          <Route path="members" element={<MemberPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-        </Route>
         <Route path="*" element={<h1>404</h1>} />
       </>
     )
@@ -36,7 +43,9 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      <RouterProvider router={router} />
+      <AuthProvider authType="localstorage" authName="_auth">
+        <RouterProvider router={router} />
+      </AuthProvider>
     </>
   );
 };
