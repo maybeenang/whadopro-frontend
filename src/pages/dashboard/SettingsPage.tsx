@@ -1,6 +1,9 @@
 import { Avatar } from "@material-tailwind/react";
+import { useSignOut } from "react-auth-kit";
 
 const SettingsPage = () => {
+  const signOut = useSignOut();
+
   return (
     <div className="py-8 max-w-xl mx-auto flex items-center justify-center flex-col">
       <Avatar
@@ -39,7 +42,10 @@ const SettingsPage = () => {
         </button>
       </form>
 
-      <button className="bg-red-500 w-full mt-16 py-2 rounded-sm text-red-50">
+      <button
+        className="bg-red-500 w-full mt-16 py-2 rounded-sm text-red-50"
+        onClick={() => signOut()}
+      >
         Logout
       </button>
     </div>

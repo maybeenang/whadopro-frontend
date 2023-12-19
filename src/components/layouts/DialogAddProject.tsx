@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { axiosInstance } from "../../utils/axios";
-import { useParams } from "react-router-dom";
 import { mutate } from "swr";
 import { useAuthUser } from "react-auth-kit";
 
@@ -29,8 +28,6 @@ const DialodAddProject = () => {
   const handleOpen = () => setOpen(!open);
 
   const auth = useAuthUser();
-
-  const { id } = useParams<{ id: string }>();
 
   toggleDialogAddProject = (state: boolean) => {
     setStatus(status);
