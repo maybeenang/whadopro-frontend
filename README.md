@@ -1,30 +1,56 @@
-# React + TypeScript + Vite
+# Whadopro Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Tech Stack
 
-Currently, two official plugins are available:
+- VITE
+- React
+- Typescript
+- TailwindCSS
+- React Router Dom
+- React Hook Form
+- Axios
+- useSWR
+- react-toastify
+- React Auth Kit
+- DndKit
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## How to run
 
-## Expanding the ESLint configuration
+1. Clone this repository
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+git clone https://github.com/maybeenang/whadopro-frontent.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Change directory to this repository
+
+```bash
+cd whadopro-frontend
+```
+
+3. Install dependencies
+
+```bash
+npm install
+```
+
+or
+
+```bash
+pnpm install
+```
+
+4. Run the app
+
+```bash
+npm run dev
+```
+
+## All done 🎉🎉🎉
+
+## Screenshots
+
+![image](./docs/home.png)
+![image](./docs/login.png)
+![image](./docs/dashboard.png)
+![image](./docs/detail.png)
